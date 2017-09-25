@@ -11,7 +11,6 @@ class AlexaRequestValidator
 {
     private $rawRequest;
     private $requestBody;
-    private $remoteAddress;
     private $applicationId;
     private $signatureChainUrl;
     private $signature;
@@ -22,22 +21,22 @@ class AlexaRequestValidator
      * AmazonSkillRequestVerifier constructor.
      * @param $applicationId - The Id for the alexa application
      * @param $request - The amazon request (generally file_get_contents('php://input'))
-     * @param $remoteAddress -
      * @param $signatureChainUrl
      * @param $signature
      * @param int $timeout - The timeout tolerance for requests. Amazon allows no more that 150 seconds (defaults to 120)
      */
-    function __construct($applicationId, $request, $remoteAddress, $signatureChainUrl, $signature, $timeout = 120)
+    function __construct($applicationId, $request, $signatureChainUrl, $signature, $timeout = 120)
     {
-        $un =  new Normalizer($signatureChainUrl);
+        $un = new Normalizer($signatureChainUrl);
 
         $this->rawRequest = $request;
         $this->requestBody = json_decode($request);
-        $this->remoteAddress = $remoteAddress;
         $this->applicationId = $applicationId;
         $this->signatureChainUrl = $un->normalize();
         $this->signature = base64_decode($signature);
         $this->timeout = $timeout;
+        // get port, we will need to check it is 443 if exists, but normalizer removes it.
+        $this->port = parse_url($signatureChainUrl, PHP_URL_PORT);
     }
 
     /**
@@ -200,10 +199,17 @@ class AlexaRequestValidator
      */
     public function isValidSignatureChainUrl()
     {
-        if (preg_match("/https:\/\/s3.amazonaws.com(\:443)?\/echo.api\/*/i", $this->signatureChainUrl) !== false) {
-            return true;
+        $url = parse_url($this->signatureChainUrl);
+        if(is_null($this->port) || $this->port === 443) {
+            if (strcasecmp($url['scheme'], 'https') == 0 && strcasecmp($url['host'], 's3.amazonaws.com') == 0) {
+                $path = explode('/', $url['path']);
+                if ($path[1] === 'echo.api') {
+                    return true;
+                }
+            }
         }
 
         throw new Exception('Invalid Signature Chain Url');
+
     }
 }
