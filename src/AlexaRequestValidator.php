@@ -48,6 +48,7 @@ class AlexaRequestValidator
         if ($this->isValidApplicationId()) {
             if ($this->requestHasNotTimedOut()) {
                 if ($this->isValidSignatureChainUrl()) {
+                    // Is a valid signatureChainUrl so we can download the PEM-encoded x.509 cert
                     $pem = $this->getPem();
                     $cert = $this->getCertificate($pem);
                     if ($this->hasValidSignatureChain($pem)) {
@@ -194,6 +195,7 @@ class AlexaRequestValidator
 
     /**
      * Returns true if the signature chain URL is a valid Amazon URL.
+     * See: https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-web-service#h2_verify_sig_cert
      * @return bool
      * @throws Exception
      */
