@@ -124,7 +124,6 @@ class AlexaRequestValidator
      */
     public function certificateHasValidSans($cert)
     {
-        echo $cert['extensions']['subjectAltName'];
         if (stristr($cert['extensions']['subjectAltName'], 'echo-api.amazon.com')) {
             return true;
         }
