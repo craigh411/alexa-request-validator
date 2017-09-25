@@ -3,6 +3,7 @@
 
 namespace Humps\AlexaRequest;
 
+use Exception;
 use Humps\AlexaRequest\Exceptions\AlexaValidationException;
 use URL\Normalizer;
 
@@ -123,6 +124,7 @@ class AlexaRequestValidator
      */
     public function certificateHasValidSans($cert)
     {
+        echo $cert['extensions']['subjectAltName'];
         if (stristr($cert['extensions']['subjectAltName'], 'echo-api.amazon.com')) {
             return true;
         }
@@ -170,9 +172,14 @@ class AlexaRequestValidator
      */
     public function hasValidSignatureChain($pem)
     {
-        if (openssl_verify($this->rawRequest, $this->signature, $pem, 'sha1') === 1) {
-            return true;
+        try{
+            if (openssl_verify($this->rawRequest, $this->signature, $pem, 'sha1') === 1) {
+                return true;
+            }
+        }catch(Exception $e){
+            throw new AlexaValidationException($e->getMessage());
         }
+
 
         throw new AlexaValidationException('Unknown SSL Chain Origin');
     }
