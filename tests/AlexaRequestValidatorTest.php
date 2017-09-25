@@ -8,6 +8,16 @@ class AlexaRequestValidatorTest extends TestCase
     /**
      * @test
      */
+    public function it_returns_true_when_the_application_ids_do_match()
+    {
+        $request = ['session' => ['application' => ['applicationId' => 'foo']]];
+        $validator = new AlexaRequestValidator('foo', json_encode($request), 'https://s3.amazonaws.com/echo.api/echo-api-cert.pem', 'foo');
+        $this->assertTrue($validator->isValidApplicationId());
+    }
+
+    /**
+     * @test
+     */
     public function it_throws_an_exception_when_application_ids_do_not_match()
     {
         $this->expectException(Exception::class);
@@ -20,11 +30,36 @@ class AlexaRequestValidatorTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_true_when_the_application_ids_do_match()
+    public function it_returns_true_when_the_request_has_a_valid_timestamp()
     {
-        $request = ['session' => ['application' => ['applicationId' => 'foo']]];
+        $date = date('Y-m-d\TH:i:s\Z');
+        $request = ['request' => ['timestamp' => $date]];
         $validator = new AlexaRequestValidator('foo', json_encode($request), 'https://s3.amazonaws.com/echo.api/echo-api-cert.pem', 'foo');
-        $this->assertTrue($validator->isValidApplicationId());
+        $this->assertTrue($validator->requestHasNotTimedOut());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_true_when_the_request_in_inside_the_timestamp_tolerance()
+    {
+        $date = date('Y-m-d\TH:i:s\Z') - 110 ;
+        $request = ['request' => ['timestamp' => $date]];
+        $validator = new AlexaRequestValidator('foo', json_encode($request), 'https://s3.amazonaws.com/echo.api/echo-api-cert.pem', 'foo');
+        $this->assertTrue($validator->requestHasNotTimedOut());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_an_exception_when_the_request_has_timed_out()
+    {
+        // Check the maximum amount of time allowed by amazon, by default this is set to 120 seconds so anything after that should fail
+        $date = date('Y-m-d\TH:i:s\Z')-150 ;
+        $request = ['request' => ['timestamp' => $date]];
+        $this->expectException(Exception::class);
+        $validator = new AlexaRequestValidator('foo', json_encode($request), 'https://s3.amazonaws.com/echo.api/echo-api-cert.pem', 'foo');
+        $validator->requestHasNotTimedOut();
     }
 
     /**
