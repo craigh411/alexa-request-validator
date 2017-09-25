@@ -3,8 +3,7 @@
 
 namespace Humps\AlexaRequest;
 
-
-use Exception;
+use Humps\AlexaRequest\Exceptions\AlexaValidationException;
 use URL\Normalizer;
 
 class AlexaRequestValidator
@@ -67,21 +66,21 @@ class AlexaRequestValidator
     /**
      * Returns true if the request applicationId matches the given applicationId
      * @return bool
-     * @throws Exception
+     * @throwsAlexaValidationException
      */
     public function isValidApplicationId()
     {
         if ($this->applicationId === $this->requestBody->session->application->applicationId) {
             return true;
         }
-        throw new Exception('Invalid Application Id. Request came from an unknown application.');
+        throw new AlexaValidationException('Invalid Application Id. Request came from an unknown application.');
     }
 
     /**
      * Returns true if the decrypted signature matches the sha1 hash of the request body
      * @param $pem
      * @return bool
-     * @throws Exception
+     * @throwsAlexaValidationException
      */
     public function hashesMatch($pem)
     {
@@ -95,9 +94,9 @@ class AlexaRequestValidator
                 return true;
             }
         } else {
-            throw new Exception('Unable to extract public key');
+            throw new AlexaValidationException('Unable to extract public key');
         }
-        throw new Exception('Invalid request: Hashes do not match');
+        throw new AlexaValidationException('Invalid request: Hashes do not match');
 
     }
 
@@ -105,7 +104,7 @@ class AlexaRequestValidator
     /**
      * Returns true if the request has not timed out
      * @return bool
-     * @throws Exception
+     * @throwsAlexaValidationException
      */
     public function requestHasNotTimedOut()
     {
@@ -113,14 +112,14 @@ class AlexaRequestValidator
             return true;
         }
 
-        throw new Exception('Request timeout');
+        throw new AlexaValidationException('Request timeout');
     }
 
     /**
      * Returns true if the certificate has a valid SANS (subject alternative name)
      * @param $cert
      * @return bool
-     * @throws Exception
+     * @throwsAlexaValidationException
      */
     public function certificateHasValidSans($cert)
     {
@@ -128,14 +127,14 @@ class AlexaRequestValidator
             return true;
         }
 
-        throw new Exception('Invalid Sans Check');
+        throw new AlexaValidationException('Invalid Sans Check');
     }
 
     /**
      * Returns true if the certificate has not expired
      * @param $cert
      * @return bool
-     * @throws Exception
+     * @throwsAlexaValidationException
      */
     public function certificateHasNotExpired($cert)
     {
@@ -143,14 +142,14 @@ class AlexaRequestValidator
             return true;
         }
 
-        throw new Exception('Certificate no longer valid');
+        throw new AlexaValidationException('Certificate no longer valid');
     }
 
     /**
      * Returns the parsed x509 certificate
      * @param $pem
      * @return array
-     * @throws Exception
+     * @throwsAlexaValidationException
      */
     public function getCertificate($pem)
     {
@@ -159,7 +158,7 @@ class AlexaRequestValidator
             return $cert;
         }
 
-        throw new Exception('Invalid PEM');
+        throw new AlexaValidationException('Invalid PEM');
     }
 
 
@@ -167,7 +166,7 @@ class AlexaRequestValidator
      * Returns true is the SSL chain origin can be verified
      * @param $pem
      * @return bool
-     * @throws Exception
+     * @throwsAlexaValidationException
      */
     public function hasValidSignatureChain($pem)
     {
@@ -175,7 +174,7 @@ class AlexaRequestValidator
             return true;
         }
 
-        throw new Exception('Unknown SSL Chain Origin');
+        throw new AlexaValidationException('Unknown SSL Chain Origin');
     }
 
 
@@ -197,7 +196,7 @@ class AlexaRequestValidator
      * Returns true if the signature chain URL is a valid Amazon URL.
      * See: https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-web-service#h2_verify_sig_cert
      * @return bool
-     * @throws Exception
+     * @throwsAlexaValidationException
      */
     public function isValidSignatureChainUrl()
     {
@@ -211,7 +210,7 @@ class AlexaRequestValidator
             }
         }
 
-        throw new Exception('Invalid Signature Chain Url');
+        throw new AlexaValidationException('Invalid Signature Chain Url');
 
     }
 }
