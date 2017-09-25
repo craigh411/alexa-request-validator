@@ -1,0 +1,21 @@
+{
+    "name": "craigh/alexa-request-validator",
+    "description": "Validates requests from Amazon Alexa",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Craig Humphreys",
+            "email": "craig_h_411@yahoo.co.uk"
+        }
+    ],
+    "require": {
+        "glenscott/url-normalizer": "^1.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Humps\\AlexaRequest\\": "src"
+        }
+    },
+    "prefer-stable": true
+}
