@@ -1,6 +1,6 @@
 # alexa-request-validator
 
-A PHP implementation of the Alexa request validation required when using a web service with your Alexa skill, as set out in the [Alexa docs](developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-web-service) 
+A PHP implementation of the Alexa request validation required when using a web service with your Alexa skill, as set out in the [Alexa docs](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-web-service) 
 
 ## Installation
 
