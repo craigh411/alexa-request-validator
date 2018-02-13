@@ -25,7 +25,7 @@ try {
   }
   
   // Reject request with a 500 error, hopefully this shouldn't happen!
-}catch(\Humps\AlexaRequest\Exceptions\AlexaRequestException $e) { 
+}catch(\Humps\AlexaRequest\Exceptions\AlexaValidationException $e) { 
   // Reject the request with a 400 error or the given error code (via $e->getCode()) with the returned message ($e->getMessage())
 }
 ```
