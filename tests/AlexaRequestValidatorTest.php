@@ -1,4 +1,5 @@
 <?php
+
 use Humps\AlexaRequest\AlexaRequestValidator;
 use Humps\AlexaRequest\Exceptions\AlexaValidationException;
 use PHPUnit\Framework\TestCase;
@@ -205,10 +206,16 @@ class AlexaRequestValidatorTest extends TestCase
      */
     public function it_returns_true_when_the_certificate_has_not_expired()
     {
-        $validator = new AlexaRequestValidator('foo', 'foo', self::VALID_PEM_URL, 'foo');
-        $pem = $validator->getPem();
-        $cert = $validator->getCertificate($pem);
-        $this->assertTrue($validator->certificateHasNotExpired($cert));
+        try {
+            $validator = new AlexaRequestValidator('foo', 'foo', self::VALID_PEM_URL, 'foo');
+            $pem = $validator->getPem();
+            $cert = $validator->getCertificate($pem);
+            $this->assertTrue($validator->certificateHasNotExpired($cert));
+        } catch (AlexaValidationException $e) {
+            $this->markTestIncomplete(
+                'Pem expired: please update VALID_PEM_URL in AlexaRequestValidatorTest to run test'
+            );
+        }
     }
 
     /**
