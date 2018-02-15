@@ -18,7 +18,8 @@ class AlexaRequestValidator
 
 
     /**
-     * AmazonSkillRequestVerifier constructor.
+     * AmazonRequestValidator constructor.
+     *
      * @param $applicationId - The Id for the alexa application
      * @param $request - The amazon request (generally file_get_contents('php://input'))
      * @param $signatureChainUrl
@@ -41,7 +42,9 @@ class AlexaRequestValidator
 
     /**
      * Returns true if all Alexa request validations pass
+     *
      * @return bool
+     * @throws AlexaValidationException
      */
     public function validateRequest()
     {
@@ -66,6 +69,7 @@ class AlexaRequestValidator
 
     /**
      * Returns true if the request applicationId matches the given applicationId
+     *
      * @return bool
      * @throws AlexaValidationException
      */
@@ -79,6 +83,7 @@ class AlexaRequestValidator
 
     /**
      * Returns true if the decrypted signature matches the sha1 hash of the request body
+     *
      * @param $pem
      * @return bool
      * @throws AlexaValidationException
@@ -104,6 +109,7 @@ class AlexaRequestValidator
 
     /**
      * Returns true if the request has not timed out
+     *
      * @return bool
      * @throws AlexaValidationException
      */
@@ -118,6 +124,7 @@ class AlexaRequestValidator
 
     /**
      * Returns true if the certificate has a valid SANS (subject alternative name)
+     *
      * @param $cert
      * @return bool
      * @throws AlexaValidationException
@@ -133,6 +140,7 @@ class AlexaRequestValidator
 
     /**
      * Returns true if the certificate has not expired
+     *
      * @param $cert
      * @return bool
      * @throws AlexaValidationException
@@ -148,6 +156,7 @@ class AlexaRequestValidator
 
     /**
      * Returns the parsed x509 certificate
+     *
      * @param $pem
      * @return array
      * @throws AlexaValidationException
@@ -165,6 +174,7 @@ class AlexaRequestValidator
 
     /**
      * Returns true is the SSL chain origin can be verified
+     *
      * @param $pem
      * @return bool
      * @throws AlexaValidationException
@@ -186,6 +196,7 @@ class AlexaRequestValidator
 
     /**
      * Returns the given PEM file
+     *
      * @return bool|string
      */
     public function getPem()
@@ -200,6 +211,7 @@ class AlexaRequestValidator
 
     /**
      * Returns true if the signature chain URL is a valid Amazon URL.
+     *
      * See: https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-web-service#h2_verify_sig_cert
      * @return bool
      * @throws AlexaValidationException
@@ -217,6 +229,5 @@ class AlexaRequestValidator
         }
 
         throw new AlexaValidationException('Invalid Signature Chain Url');
-
     }
 }
