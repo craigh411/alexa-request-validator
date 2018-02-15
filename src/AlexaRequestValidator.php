@@ -18,7 +18,7 @@ class AlexaRequestValidator
     private $port;
 
     /**
-     * AmazonRequestValidator constructor.
+     * AlexaRequestValidator constructor.
      *
      * @param $applicationId - The Id for the alexa application
      * @param $request - The amazon request (generally file_get_contents('php://input'))
