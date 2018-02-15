@@ -15,7 +15,7 @@ class AlexaRequestValidator
     private $signatureChainUrl;
     private $signature;
     private $timeout;
-
+    private $port;
 
     /**
      * AmazonRequestValidator constructor.
