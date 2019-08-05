@@ -75,7 +75,7 @@ class AlexaRequestValidator
      */
     public function isValidApplicationId()
     {
-        if ($this->applicationId === $this->requestBody->session->application->applicationId) {
+        if ($this->applicationId === $this->requestBody->context->System->application->applicationId) {
             return true;
         }
         throw new AlexaValidationException('Invalid Application Id. Request came from an unknown application.');

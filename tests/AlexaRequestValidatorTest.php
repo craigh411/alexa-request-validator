@@ -15,7 +15,7 @@ class AlexaRequestValidatorTest extends TestCase
      */
     public function it_returns_true_when_the_application_ids_do_match()
     {
-        $request = ['session' => ['application' => ['applicationId' => 'foo']]];
+        $request = ['context' => ['System' => ['application' => ['applicationId' => 'foo']]]];
         $validator = new AlexaRequestValidator('foo', json_encode($request), 'https://s3.amazonaws.com/echo.api/echo-api-cert.pem', 'foo');
         $this->assertTrue($validator->isValidApplicationId());
     }
@@ -27,7 +27,7 @@ class AlexaRequestValidatorTest extends TestCase
     {
         $this->expectException(AlexaValidationException::class);
         //session->application->applicationId
-        $request = ['session' => ['application' => ['applicationId' => 'bar']]];
+        $request = ['context' => ['System' => ['application' => ['applicationId' => 'bar']]]];
         $validator = new AlexaRequestValidator('foo', json_encode($request), 'https://s3.amazonaws.com/echo.api/echo-api-cert.pem', 'foo');
         $validator->isValidApplicationId();
     }
